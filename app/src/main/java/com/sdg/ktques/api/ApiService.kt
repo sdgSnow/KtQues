@@ -9,9 +9,9 @@ interface ApiService {
     /**
      * ‘关于我们’信息
      *
-     * @param ProCode
+     * @param code
      * @return
      */
     @GET("api/Que/GetAboutUs")
-    fun getAboutUs(@Query("ProCode") ProCode: String?): Observable<Res<AboutUsBean?>?>?
+    fun getAboutUs(@Query("ProCode") code: String): Observable<Res<AboutUsBean>>
 }

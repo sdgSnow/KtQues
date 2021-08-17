@@ -11,7 +11,7 @@ abstract class BaseObserver<T>(context: Context?, hideLoading: Boolean) : Observ
      * hideLoading 是否隱藏等待框
      * 默認為true
      */
-    private var hideLoading : Boolean = true
+    private var hideLoading: Boolean = true
 
     private var context: Context? = null
 
@@ -21,38 +21,40 @@ abstract class BaseObserver<T>(context: Context?, hideLoading: Boolean) : Observ
     }
 
     override fun onSubscribe(d: Disposable) {
-        ApiLoading.getInstance().show(context,false)
+        ApiLoading.getInstance().show(context, false)
         onPrepare(d)
     }
 
     override fun onNext(t: Res<T>) {
         ApiLoading.getInstance().cancel()
-        if(t != null){
-            if(t.code == 200 && t.ResultObj != null){
-                onSuccess(t)
-            }else{
-                onFaild(t.Msg)
-            }
-        }else{
-            onFaild("数据返回异常")
+        if (t.code == 200 && t.ResultObj != null) {
+            onSuccess(t)
+        } else {
+            onFail(t.Msg)
         }
     }
 
     override fun onError(e: Throwable) {
         e.printStackTrace()
-        if(e is HttpException){
+        if (e is HttpException) {
             val code = e.code()
-            onFaild(e.message())
-            if(code == 404){
-                Toast.makeText(context, "抱歉~你要查看的页面不存在", Toast.LENGTH_SHORT).show()
-            }else if(code == 500){
-                Toast.makeText(context, "服务器异常，请稍后重试...", Toast.LENGTH_SHORT).show()
-            }else if(code == 502){
-                Toast.makeText(context, "网络连接不可用，请稍后重试", Toast.LENGTH_SHORT).show()
-            }else if(code == 504){
-                Toast.makeText(context, "网络连接不可用，请稍后重试", Toast.LENGTH_SHORT).show()
-            }else{
-                Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+            onFail(e.message())
+            when (code) {
+                404 -> {
+                    Toast.makeText(context, "抱歉~你要查看的页面不存在", Toast.LENGTH_SHORT).show()
+                }
+                500 -> {
+                    Toast.makeText(context, "服务器异常，请稍后重试...", Toast.LENGTH_SHORT).show()
+                }
+                502 -> {
+                    Toast.makeText(context, "网络连接不可用，请稍后重试", Toast.LENGTH_SHORT).show()
+                }
+                504 -> {
+                    Toast.makeText(context, "网络连接不可用，请稍后重试", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                }
             }
         } else {
             Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
@@ -64,14 +66,14 @@ abstract class BaseObserver<T>(context: Context?, hideLoading: Boolean) : Observ
     }
 
     override fun onComplete() {
-        if (hideLoading){
+        if (hideLoading) {
             ApiLoading.getInstance().cancel()
         }
     }
 
-    protected abstract fun onPrepare(d: Disposable?)
+    protected abstract fun onPrepare(d: Disposable)
 
     protected abstract fun onSuccess(res: Res<T>?)
 
-    protected abstract fun onFaild(error: String?)
+    protected abstract fun onFail(error: String?)
 }
