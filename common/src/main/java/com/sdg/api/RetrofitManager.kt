@@ -13,17 +13,17 @@ class RetrofitManager {
     /**
      * 连接超时时间，默认30秒
      */
-    private var connectTimeout : Long = 30
+    private var connectTimeout: Long = 30
 
     /**
      * 读取数据超时时间，默认30秒
      */
-    private var readTimeout : Long = 30
+    private var readTimeout: Long = 30
 
     /**
      * 写入数据超时时间，默认30秒
      */
-    private var writeTimeout : Long = 30
+    private var writeTimeout: Long = 30
 
     /**
      * 失败后是否重连，默认false
@@ -36,11 +36,11 @@ class RetrofitManager {
     private var url: String? = null
 
     companion object {
-        private var mRetrofitManager : RetrofitManager? = null
-        fun get() : RetrofitManager{
-            if(mRetrofitManager == null){
-                synchronized(RetrofitManager::class.java){
-                    if (mRetrofitManager == null){
+        private var mRetrofitManager: RetrofitManager? = null
+        fun get(): RetrofitManager {
+            if (mRetrofitManager == null) {
+                synchronized(RetrofitManager::class.java) {
+                    if (mRetrofitManager == null) {
                         mRetrofitManager = RetrofitManager()
                     }
                 }
@@ -50,35 +50,37 @@ class RetrofitManager {
     }
 
     fun <T> getApi(service: Class<T>): T {
-        return OkHttpUtils.get().getRetrofit(url,connectTimeout,readTimeout,writeTimeout,retryOnConnectionFailure).create(service)
+        return OkHttpUtils.get()
+            .getRetrofit(url, connectTimeout, readTimeout, writeTimeout, retryOnConnectionFailure)
+            .create(service)
     }
 
-    fun setConnectTimeout(connectTimeout: Long): RetrofitManager? {
+    fun setConnectTimeout(connectTimeout: Long): RetrofitManager {
         this.connectTimeout = connectTimeout
         return this
     }
 
-    fun setReadTimeout(readTimeout: Long): RetrofitManager? {
+    fun setReadTimeout(readTimeout: Long): RetrofitManager {
         this.readTimeout = readTimeout
         return this
     }
 
-    fun setWriteTimeout(writeTimeout: Long): RetrofitManager? {
+    fun setWriteTimeout(writeTimeout: Long): RetrofitManager {
         this.writeTimeout = writeTimeout
         return this
     }
 
-    fun setRetryOnConnectionFailure(retryOnConnectionFailure: Boolean): RetrofitManager? {
+    fun setRetryOnConnectionFailure(retryOnConnectionFailure: Boolean): RetrofitManager {
         this.retryOnConnectionFailure = retryOnConnectionFailure
         return this
     }
 
-    fun setUrl(url: String?): RetrofitManager? {
+    fun setUrl(url: String?): RetrofitManager {
         this.url = url
         return this
     }
 
-    fun setContext(context: Context): RetrofitManager? {
+    fun setContext(context: Context): RetrofitManager {
         mContext = context
         // 获取主线程ID
         mMainThreadId = Process.myTid()
